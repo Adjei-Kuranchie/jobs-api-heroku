@@ -14,6 +14,14 @@ const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerDocument = YAML.load(path.join(__dirname, "./swagger.yaml"));
 
+const swaggerOptions = {
+  customCssUrl: "https://unpkg.com/swagger-ui-dist@4/swagger-ui.css",
+  customJs: [
+    "https://unpkg.com/swagger-ui-dist@4/swagger-ui-bundle.js",
+    "https://unpkg.com/swagger-ui-dist@4/swagger-ui-standalone-preset.js",
+  ],
+};
+
 const authRouter = require("./routes/auth");
 const jobsRouter = require("./routes/jobs");
 
@@ -44,7 +52,11 @@ app.get("/", (req, res) => {
   res.send(`<h1>Jobs API</h1><a href="/api-docs">Documentation</a>`);
 });
 
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use(
+  "/api-docs",
+  swaggerUI.serve,
+  swaggerUI.setup(swaggerDocument, swaggerOptions)
+);
 
 // routes
 app.use("/api/v1/auth", authRouter);
