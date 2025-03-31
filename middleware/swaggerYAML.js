@@ -6,7 +6,7 @@ info:
   title: Jobs Api
   version: 1.0.0
 servers:
-  - url: https://jobs-api-azure.vercel.app/api/v1
+  - url: https://jobs-api-pearl.vercel.app/api/v1
 components:
   securitySchemes:
     bearerAuth:
