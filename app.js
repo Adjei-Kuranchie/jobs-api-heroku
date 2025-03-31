@@ -50,6 +50,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api-docs", express.static(pathToSwaggerUi));
+app.use("/api-docs", express.static("./middleware/swagger-ui.css"));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // routes
