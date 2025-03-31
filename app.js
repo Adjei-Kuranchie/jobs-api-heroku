@@ -9,14 +9,10 @@ const xss = require("xss-clean");
 const rateLimiter = require("express-rate-limit");
 
 // Swagger
+const path = require("node:path");
 const swaggerUI = require("swagger-ui-express");
-const pathToSwaggerUi = require("swagger-ui-dist").absolutePath();
-const fs = require("fs");
-// const YAML = require("yamljs");
-// const file = fs.readFileSync("./swagger.yaml", "utf8");
-// const swaggerDocument = YAML.parse(file);
-
-const { swaggerDocument } = require("./middleware/swaggerYAML.js");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load(path.join(__dirname, "./swagger.yaml"));
 
 const authRouter = require("./routes/auth");
 const jobsRouter = require("./routes/jobs");
@@ -25,15 +21,15 @@ const connectDB = require("./db/connect");
 
 const app = express();
 
-// error handler
+// middleware
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const authenticateUser = require("./middleware/authentication");
 
 app.use(express.json());
 
-app.set("trust proxy", 1);
 // extra packages
+app.set("trust proxy", 1);
 app.use(
   rateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -45,12 +41,9 @@ app.use(cors());
 app.use(xss());
 
 app.get("/", (req, res) => {
-  console.log(pathToSwaggerUi);
   res.send(`<h1>Jobs API</h1><a href="/api-docs">Documentation</a>`);
 });
 
-app.use("/api-docs", express.static(pathToSwaggerUi));
-app.use("/api-docs", express.static("./middleware/swagger-ui.css"));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // routes
